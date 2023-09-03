@@ -1,7 +1,6 @@
-package com.experiment.rickandmorty.data
+package com.experiment.rickandmorty.data.character
 
 
-import com.experiment.rickandmorty.data.character.CharactersModel
 import com.google.gson.annotations.SerializedName
 
 data class AllCharactersResponse(

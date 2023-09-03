@@ -1,7 +1,6 @@
 package com.experiment.rickandmorty.api
 
-import com.experiment.rickandmorty.data.AllCharactersResponse
-import com.experiment.rickandmorty.data.character.CharactersModel
+import com.experiment.rickandmorty.data.character.AllCharactersResponse
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

@@ -10,9 +10,10 @@ import com.experiment.rickandmorty.data.character.CharactersModel
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class ApiRespository @Inject constructor(private val service: ApiService) {
+class ApiRepository @Inject constructor(private val service: ApiService) {
 
     fun getAllCharactersOfAPage(): Flow<PagingData<CharactersModel>> {
+
         return Pager(config = PagingConfig(
             enablePlaceholders = false, pageSize = NETWORK_PAGE_SIZE
         ), pagingSourceFactory = { CharactersPagingSource(service) }).flow
