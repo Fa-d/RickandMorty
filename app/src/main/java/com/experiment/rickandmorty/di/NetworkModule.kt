@@ -1,19 +1,35 @@
 package com.experiment.rickandmorty.di
 
-import com.experiment.rickandmorty.api.ApiService
+import androidx.multidex.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.serialization.json.Json
+import okhttp3.Call
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Singleton
 
-@InstallIn(SingletonComponent::class)
 @Module
-class NetworkModule {
-
-    @Singleton
+@InstallIn(SingletonComponent::class)
+object NetworkModule {
     @Provides
-    fun provideApiService(): ApiService {
-        return ApiService.create()
+    @Singleton
+    fun providesNetworkJson(): Json = Json {
+        ignoreUnknownKeys = true
     }
+
+    @Provides
+    @Singleton
+    fun okHttpCallFactory(): Call.Factory = OkHttpClient.Builder()
+        .addInterceptor(
+            HttpLoggingInterceptor()
+                .apply {
+                    if (BuildConfig.DEBUG) {
+                        setLevel(HttpLoggingInterceptor.Level.BODY)
+                    }
+                },
+        )
+        .build()
 }

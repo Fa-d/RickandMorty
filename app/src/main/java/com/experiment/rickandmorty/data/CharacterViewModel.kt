@@ -8,8 +8,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CharacterViewModel @Inject constructor(
-    repository: ApiRepository
+    repository: OfflineFirstRepository
 ) : ViewModel() {
-    val characterList = repository.getAllCharactersOfAPage()
-    var selectedCharacterID: CharactersModel = CharactersModel()
+    //val characterList = repository.getAllCharactersOfAPage()
+    val characterList = repository.getCharacters()
+    var selectedCharacterID: CharactersModel? = null //CharactersModel()
 }

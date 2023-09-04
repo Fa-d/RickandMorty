@@ -53,7 +53,7 @@ class CharactersListFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.characterList.collectLatest { innerData ->
                     CharacterAdapter().apply {
-                        characterAdapter.submitData(innerData)
+                       // characterAdapter.submitData(innerData)
                     }
                 }
             }

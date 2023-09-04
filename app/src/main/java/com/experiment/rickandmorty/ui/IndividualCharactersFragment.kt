@@ -36,11 +36,11 @@ class IndividualCharactersFragment : Fragment() {
 
     private fun initView() {
         val viewModel: CharacterViewModel by activityViewModels()
-        bindImageFromUrl(binding.avatarImage, viewModel.selectedCharacterID.image)
+        bindImageFromUrl(binding.avatarImage, viewModel.selectedCharacterID?.image)
         binding.apply {
-            nameOfCharacter.text = viewModel.selectedCharacterID.name
-            speciesOfCharacter.text = viewModel.selectedCharacterID.species
-            genderOfCharacter.text = viewModel.selectedCharacterID.gender
+            nameOfCharacter.text = viewModel.selectedCharacterID?.name
+            speciesOfCharacter.text = viewModel.selectedCharacterID?.species
+            genderOfCharacter.text = viewModel.selectedCharacterID?.gender
         }
     }
 
