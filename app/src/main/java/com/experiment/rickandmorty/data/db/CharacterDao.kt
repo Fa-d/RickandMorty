@@ -10,13 +10,13 @@ import com.experiment.rickandmorty.data.character.CharactersModel
 @Dao
 interface CharacterDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(repos: List<CharactersModel>)
+    suspend fun insertAll(repos: List<CharactersModel>)
 
     @Query("SELECT * FROM characters")
     fun reposByName(): PagingSource<Int, CharactersModel>
 
     @Query("DELETE FROM characters")
-    fun clearRepos()
+    suspend fun clearRepos()
 
 
 }
