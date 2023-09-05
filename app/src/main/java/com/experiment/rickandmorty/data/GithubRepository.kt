@@ -18,13 +18,20 @@ package com.experiment.rickandmorty.data
 
 import android.util.Log
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadType
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.PagingState
+import androidx.paging.RemoteMediator
+import androidx.room.withTransaction
 import com.experiment.rickandmorty.api.RetrofitNetwork
-import com.experiment.rickandmorty.data.model.CharactersModel
 import com.experiment.rickandmorty.data.db.MainDatabase
+import com.experiment.rickandmorty.data.model.CharactersModel
+import com.experiment.rickandmorty.data.model.RemoteKeys
 import kotlinx.coroutines.flow.Flow
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 /**
@@ -34,27 +41,53 @@ class GithubRepository @Inject constructor(
     private val service: RetrofitNetwork, private val database: MainDatabase
 ) {
 
-    /**
-     * Search repositories whose names match the query, exposed as a stream of data that will emit
-     * every time we get more data from the network.
-     */
     fun getSearchResultStream(query: String): Flow<PagingData<CharactersModel>> {
-        Log.d("GithubRepository", "New query: $query")
 
-        // appending '%' so we can allow other characters to be before and after the query string
-        val dbQuery = "%${query.replace(' ', '%')}%"
         val pagingSourceFactory = { database.characterDao().reposByName() }
 
         @OptIn(ExperimentalPagingApi::class) return Pager(
             config = PagingConfig(pageSize = NETWORK_PAGE_SIZE, enablePlaceholders = false),
-            remoteMediator = OfflineFirstRepository(
-                database, service
-            ),
+            remoteMediator = object : RemoteMediator<Int, CharactersModel>() {
+                override suspend fun load(
+                    loadType: LoadType, state: PagingState<Int, CharactersModel>
+                ): MediatorResult {
+                    Log.e("sdfs", state.pages)
+
+                    when (loadType) {
+                        LoadType.REFRESH -> {}
+                        LoadType.PREPEND -> {}
+                        LoadType.APPEND -> {}
+                    }
+                    return try {
+                        val apiResponse = service.getCharacters(null)
+                        val repos = apiResponse
+                        val endOfPaginationReached = repos.isEmpty()
+                        database.withTransaction {
+                            if (loadType == LoadType.REFRESH) {
+                                database.remoteKeysDao().clearRemoteKeys()
+                                database.characterDao().clearRepos()
+                            }
+                            val prevKey = if (1 == 1) null else 1 - 1
+                            val nextKey = if (endOfPaginationReached) null else 1 + 1
+                            val keys = repos.map {
+                                RemoteKeys(repoId = it.id, prevKey = prevKey, nextKey = nextKey)
+                            }
+                            database.remoteKeysDao().insertAll(keys)
+                            database.characterDao().insertAll(repos)
+                        }
+                        MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
+                    } catch (exception: IOException) {
+                        MediatorResult.Error(exception)
+                    } catch (exception: HttpException) {
+                        MediatorResult.Error(exception)
+                    }
+                }
+            },
             pagingSourceFactory = pagingSourceFactory
         ).flow
     }
 
     companion object {
-        const val NETWORK_PAGE_SIZE = 30
+        const val NETWORK_PAGE_SIZE = 20
     }
 }
