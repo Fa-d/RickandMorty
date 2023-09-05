@@ -1,19 +1,19 @@
 package com.experiment.rickandmorty.data.character
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 
 
 @Entity(tableName = "characters")
 data class CharactersModel(
-    @PrimaryKey val id: Int,
-    @ColumnInfo(defaultValue = "", name = "created") val created: String,
-    @ColumnInfo(defaultValue = "", name = "gender") val gender: String,
-    @ColumnInfo(defaultValue = "", name = "image") val image: String,
-    @ColumnInfo(defaultValue = "", name = "name") val name: String,
-    @ColumnInfo(defaultValue = "", name = "species") val species: String,
-    @ColumnInfo(defaultValue = "", name = "status") val status: String,
-    @ColumnInfo(defaultValue = "", name = "type") val type: String,
-    @ColumnInfo(defaultValue = "", name = "url") val url: String
+    @PrimaryKey @field:SerializedName("id")val id: Int,
+    @field:SerializedName("created") val created: String,
+    @field:SerializedName("gender") val gender: String,
+    @field:SerializedName("image") val image: String,
+    @field:SerializedName("name") val name: String,
+    @field:SerializedName("species") val species: String,
+    @field:SerializedName("status") val status: String,
+    @field:SerializedName("type") val type: String,
+    @field:SerializedName("url") val url: String
 )

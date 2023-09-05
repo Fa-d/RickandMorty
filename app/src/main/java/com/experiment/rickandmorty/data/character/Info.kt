@@ -1,5 +1,10 @@
 package com.experiment.rickandmorty.data.character
 
+import com.google.gson.annotations.SerializedName
+
 data class Info(
-    var count: Int = 0, var next: String = "", var pages: Int = 0, var prev: Any = Any()
+    @field:SerializedName("count") var count: Int = 0,
+    @field:SerializedName("next") var next: String = "",
+    @field:SerializedName("pages") var pages: Int = 0,
+    @field:SerializedName("prev") var prev: Any = Any()
 )

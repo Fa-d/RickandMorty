@@ -1,4 +1,4 @@
-package com.experiment.rickandmorty.data
+package com.experiment.rickandmorty.data.db
 
 import dagger.Module
 import dagger.Provides
@@ -12,4 +12,9 @@ object DaosModule {
     fun providesTopicsDao(
         database: MainDatabase,
     ): CharacterDao = database.characterDao()
+
+    @Provides
+    fun providesRemoteKeysDao(
+        database: MainDatabase,
+    ): RemoteKeysDao = database.remoteKeysDao()
 }

@@ -8,9 +8,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CharacterViewModel @Inject constructor(
-    repository: OfflineFirstRepository
+    repository: GithubRepository
 ) : ViewModel() {
-    //val characterList = repository.getAllCharactersOfAPage()
-    val characterList = repository.getCharacters()
+    val characterList = repository.getSearchResultStream("")
     var selectedCharacterID: CharactersModel? = null //CharactersModel()
 }
