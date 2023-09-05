@@ -34,7 +34,7 @@ interface CharacterDao {
             WHERE id in (:ids)
         """,
     )
-     fun deleteTopics(ids: List<String>)
+    fun deleteTopics(ids: List<String>)
 
 
 }
