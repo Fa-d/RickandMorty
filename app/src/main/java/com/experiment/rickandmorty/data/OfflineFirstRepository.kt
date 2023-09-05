@@ -5,17 +5,17 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import com.experiment.rickandmorty.api.RetrofitNiaNetwork
-import com.experiment.rickandmorty.data.character.CharactersModel
+import com.experiment.rickandmorty.api.RetrofitNetwork
 import com.experiment.rickandmorty.data.db.MainDatabase
-import com.experiment.rickandmorty.data.db.RemoteKeys
+import com.experiment.rickandmorty.data.model.CharactersModel
+import com.experiment.rickandmorty.data.model.RemoteKeys
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
 class OfflineFirstRepository @Inject constructor(
-    private val repoDatabase: MainDatabase, private val service: RetrofitNiaNetwork
+    private val repoDatabase: MainDatabase, private val service: RetrofitNetwork
 ) : RemoteMediator<Int, CharactersModel>() {
     override suspend fun load(
         loadType: LoadType, state: PagingState<Int, CharactersModel>

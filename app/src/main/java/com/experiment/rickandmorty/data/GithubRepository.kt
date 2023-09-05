@@ -21,8 +21,8 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.experiment.rickandmorty.api.RetrofitNiaNetwork
-import com.experiment.rickandmorty.data.character.CharactersModel
+import com.experiment.rickandmorty.api.RetrofitNetwork
+import com.experiment.rickandmorty.data.model.CharactersModel
 import com.experiment.rickandmorty.data.db.MainDatabase
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -31,7 +31,7 @@ import javax.inject.Inject
  * Repository class that works with local and remote data sources.
  */
 class GithubRepository @Inject constructor(
-    private val service: RetrofitNiaNetwork, private val database: MainDatabase
+    private val service: RetrofitNetwork, private val database: MainDatabase
 ) {
 
     /**

@@ -1,16 +1,13 @@
 package com.experiment.rickandmorty.ui
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
-import com.experiment.rickandmorty.R
 import com.experiment.rickandmorty.data.CharacterViewModel
 import com.experiment.rickandmorty.databinding.FragmentIndividualCharactersBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,12 +49,6 @@ class IndividualCharactersFragment : Fragment() {
 }
 
 fun bindImageFromUrl(view: ImageView, imageUrl: String?) {
-    if (imageUrl.isNullOrEmpty()) {
-        Toast.makeText(view.context, "Null URL", Toast.LENGTH_SHORT).show()
-        return
-    } else {
-        Log.e("TImageURL", imageUrl)
-    }
     Glide.with(view).load(imageUrl).into(view)
 }
 

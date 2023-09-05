@@ -1,11 +1,11 @@
-package com.experiment.rickandmorty.data.db
+package com.experiment.rickandmorty.data.db.dao
 
 import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.experiment.rickandmorty.data.character.CharactersModel
+import com.experiment.rickandmorty.data.model.CharactersModel
 
 @Dao
 interface CharacterDao {

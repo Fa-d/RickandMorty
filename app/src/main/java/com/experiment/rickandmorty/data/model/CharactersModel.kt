@@ -1,4 +1,4 @@
-package com.experiment.rickandmorty.data.character
+package com.experiment.rickandmorty.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

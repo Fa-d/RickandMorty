@@ -1,7 +1,7 @@
 package com.experiment.rickandmorty.ui
 
 import androidx.recyclerview.widget.RecyclerView
-import com.experiment.rickandmorty.data.character.CharactersModel
+import com.experiment.rickandmorty.data.model.CharactersModel
 import com.experiment.rickandmorty.databinding.CharactersViewholderBinding
 
 class CharacterViewHolder(private val binding: CharactersViewholderBinding) :

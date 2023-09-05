@@ -18,7 +18,10 @@ package com.experiment.rickandmorty.data.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.experiment.rickandmorty.data.character.CharactersModel
+import com.experiment.rickandmorty.data.db.dao.CharacterDao
+import com.experiment.rickandmorty.data.db.dao.RemoteKeysDao
+import com.experiment.rickandmorty.data.model.CharactersModel
+import com.experiment.rickandmorty.data.model.RemoteKeys
 
 @Database(entities = [CharactersModel::class, RemoteKeys::class], version = 1, exportSchema = false)
 abstract class MainDatabase : RoomDatabase() {

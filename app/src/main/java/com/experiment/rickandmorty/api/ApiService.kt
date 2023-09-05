@@ -1,7 +1,7 @@
 package com.experiment.rickandmorty.api
 
-import com.experiment.rickandmorty.data.character.AllCharactersResponse
-import com.experiment.rickandmorty.data.character.CharactersModel
+import com.experiment.rickandmorty.data.model.AllCharactersResponse
+import com.experiment.rickandmorty.data.model.CharactersModel
 import okhttp3.Call
 import retrofit2.Converter
 import retrofit2.Retrofit
@@ -18,7 +18,7 @@ private interface ApiService {
 private const val BASE_URL = "https://rickandmortyapi.com/api/"
 
 @Singleton
-class RetrofitNiaNetwork @Inject constructor(
+class RetrofitNetwork @Inject constructor(
     networkJson: Converter.Factory,
     okhttpCallFactory: Call.Factory,
 ) {

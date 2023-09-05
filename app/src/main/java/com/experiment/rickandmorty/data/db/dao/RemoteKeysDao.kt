@@ -14,15 +14,23 @@
  * limitations under the License.
  */
 
-package com.experiment.rickandmorty.data.db
+package com.experiment.rickandmorty.data.db.dao
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import com.experiment.rickandmorty.data.model.RemoteKeys
 
-@Entity(tableName = "remote_keys")
-data class RemoteKeys(
-    @PrimaryKey val repoId: Int,
-    @field:SerializedName("prevKey") val prevKey: Int?,
-    @field:SerializedName("nextKey") val nextKey: Int?
-)
+@Dao
+interface RemoteKeysDao {
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend  fun insertAll(remoteKey: List<RemoteKeys>)
+
+    @Query("SELECT * FROM remote_keys WHERE repoId = :repoId")
+    suspend fun remoteKeysRepoId(repoId: Int): RemoteKeys?
+
+    @Query("DELETE FROM remote_keys")
+    suspend fun clearRemoteKeys()
+}
