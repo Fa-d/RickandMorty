@@ -10,6 +10,6 @@ import javax.inject.Inject
 class CharacterViewModel @Inject constructor(
     repository: GithubRepository
 ) : ViewModel() {
-    val characterList = repository.getSearchResultStream("")
-    var selectedCharacterID: CharactersModel? = null //CharactersModel()
+    val characterList = repository.getSearchResultStream()
+    var selectedCharacterID: CharactersModel? = null 
 }

@@ -41,7 +41,7 @@ class GithubRepository @Inject constructor(
     private val service: RetrofitNetwork, private val database: MainDatabase
 ) {
 
-    fun getSearchResultStream(query: String): Flow<PagingData<CharactersModel>> {
+    fun getSearchResultStream(): Flow<PagingData<CharactersModel>> {
 
         val pagingSourceFactory = { database.characterDao().reposByName() }
 
@@ -51,15 +51,34 @@ class GithubRepository @Inject constructor(
                 override suspend fun load(
                     loadType: LoadType, state: PagingState<Int, CharactersModel>
                 ): MediatorResult {
-                    Log.e("sdfs", state.pages)
+                    val page = when (loadType) {
+                        LoadType.REFRESH -> {
+                            val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
+                            remoteKeys?.nextKey?.minus(1) ?: 1
+                        }
 
-                    when (loadType) {
-                        LoadType.REFRESH -> {}
-                        LoadType.PREPEND -> {}
-                        LoadType.APPEND -> {}
+                        LoadType.PREPEND -> {
+                            val remoteKeys = getRemoteKeyForFirstItem(state)
+                            val prevKey = remoteKeys?.prevKey
+                            if (prevKey == null) {
+                                return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
+                            }
+                            prevKey
+                        }
+
+                        LoadType.APPEND -> {
+                            val remoteKeys = getRemoteKeyForLastItem(state)
+                            val nextKey = remoteKeys?.nextKey
+                            if (nextKey == null) {
+                                return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
+                            }
+                            nextKey
+                        }
                     }
-                    return try {
-                        val apiResponse = service.getCharacters(null)
+
+                    try {
+                        val apiResponse = service.getCharacters(page)
+
                         val repos = apiResponse
                         val endOfPaginationReached = repos.isEmpty()
                         database.withTransaction {
@@ -67,24 +86,49 @@ class GithubRepository @Inject constructor(
                                 database.remoteKeysDao().clearRemoteKeys()
                                 database.characterDao().clearRepos()
                             }
-                            val prevKey = if (1 == 1) null else 1 - 1
-                            val nextKey = if (endOfPaginationReached) null else 1 + 1
+                            val prevKey = if (page == 1) null else page - 1
+                            val nextKey = if (endOfPaginationReached) null else page + 1
                             val keys = repos.map {
                                 RemoteKeys(repoId = it.id, prevKey = prevKey, nextKey = nextKey)
                             }
                             database.remoteKeysDao().insertAll(keys)
                             database.characterDao().insertAll(repos)
                         }
-                        MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
+                        return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
                     } catch (exception: IOException) {
-                        MediatorResult.Error(exception)
+                        return MediatorResult.Error(exception)
                     } catch (exception: HttpException) {
-                        MediatorResult.Error(exception)
+                        return MediatorResult.Error(exception)
                     }
                 }
             },
             pagingSourceFactory = pagingSourceFactory
         ).flow
+    }
+
+    private suspend fun getRemoteKeyClosestToCurrentPosition(
+        state: PagingState<Int, CharactersModel>
+    ): RemoteKeys? {
+
+        return state.anchorPosition?.let { position ->
+            state.closestItemToPosition(position)?.id?.let { repoId ->
+                database.remoteKeysDao().remoteKeysRepoId(repoId)
+            }
+        }
+    }
+
+
+    private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, CharactersModel>): RemoteKeys? {
+        return state.pages.lastOrNull() { it.data.isNotEmpty() }?.data?.lastOrNull()?.let { repo ->
+            database.remoteKeysDao().remoteKeysRepoId(repo.id)
+        }
+    }
+
+    private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, CharactersModel>): RemoteKeys? {
+
+        return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()?.let { repo ->
+            database.remoteKeysDao().remoteKeysRepoId(repo.id)
+        }
     }
 
     companion object {
