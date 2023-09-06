@@ -30,37 +30,34 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 @HiltWorker
 class SyncWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
+    private val service: RetrofitNetwork,
+    private val database: MainDatabase
 ) : CoroutineWorker(appContext, workerParams) {
-
-
-    @Inject
-    lateinit var service: RetrofitNetwork
-
-    @Inject
-    lateinit var database: MainDatabase
-
     override suspend fun getForegroundInfo(): ForegroundInfo = appContext.syncForegroundInfo()
-
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         traceAsync("Sync", 0) {
-            var allChars = service.getCharacters(null)
             var isLastPage = false
 
-            for (i in 0..allChars.info.pages) {
-                allChars = service.getCharacters(i + 1)
-                database.characterDao().insertAll(allChars.results)
-                if (allChars.info.next == null) {
-                    isLastPage = true
-                    break
-                }
-            }
+            try {
+                var allChars = service.getCharacters(null)
 
+                for (i in 0..allChars.info.pages) {
+                    allChars = service.getCharacters(i + 1)
+                    database.characterDao().insertAll(allChars.results)
+                    if (allChars.info.next == null) {
+                        isLastPage = true
+                        break
+                    }
+                }
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
             if (isLastPage) {
                 Log.e("acca", "success")
                 Result.success()
@@ -71,3 +68,4 @@ class SyncWorker @AssistedInject constructor(
         }
     }
 }
+
