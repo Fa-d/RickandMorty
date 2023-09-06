@@ -27,7 +27,7 @@ class RetrofitNetwork @Inject constructor(
         .addConverterFactory(networkJson)
         .build().create(ApiService::class.java)
 
-    suspend fun getCharacters(pageNo: Int?): List<CharactersModel> =
-        networkApi.getAllCharacter(pageNo).results
+    suspend fun getCharacters(pageNo: Int?): AllCharactersResponse =
+        networkApi.getAllCharacter(pageNo)
 
 }

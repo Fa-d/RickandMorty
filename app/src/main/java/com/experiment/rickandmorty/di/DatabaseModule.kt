@@ -31,7 +31,7 @@ import javax.inject.Singleton
 object DatabaseModule {
     @Provides
     @Singleton
-    fun providesNiaDatabase(
+    fun providesDatabase(
         @ApplicationContext context: Context,
     ): MainDatabase = Room.databaseBuilder(
         context,

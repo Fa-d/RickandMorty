@@ -17,67 +17,57 @@
 package com.experiment.rickandmorty.work.workers
 
 import android.content.Context
+import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.tracing.traceAsync
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkerParameters
-import com.experiment.rickandmorty.di.Dispatcher
-import com.experiment.rickandmorty.di.MainDispatchers
-import com.experiment.rickandmorty.work.initializers.SyncConstraints
+import com.experiment.rickandmorty.api.RetrofitNetwork
+import com.experiment.rickandmorty.data.db.MainDatabase
 import com.experiment.rickandmorty.work.initializers.syncForegroundInfo
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-/**
- * Syncs the data layer by delegating to the appropriate repository instances with
- * sync functionality.
- */
 @HiltWorker
 class SyncWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
+) : CoroutineWorker(appContext, workerParams) {
 
-    @Dispatcher(MainDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 
-    ) : CoroutineWorker(appContext, workerParams) {
+    @Inject
+    lateinit var service: RetrofitNetwork
+
+    @Inject
+    lateinit var database: MainDatabase
 
     override suspend fun getForegroundInfo(): ForegroundInfo = appContext.syncForegroundInfo()
 
-    override suspend fun doWork(): Result = withContext(ioDispatcher) {
+    override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         traceAsync("Sync", 0) {
-            /*     analyticsHelper.logSyncStarted()
+            var allChars = service.getCharacters(null)
+            var isLastPage = false
 
-                 syncSubscriber.subscribe()
-                 analyticsHelper.logSyncFinished(syncedSuccessfully)*/
-            // First sync the repositories in parallel
-            val syncedSuccessfully = true/*awaitAll(
-                async { topicRepository.sync() },
-                async { newsRepository.sync() },
-            ).all { it }*/
+            for (i in 0..allChars.info.pages) {
+                allChars = service.getCharacters(i + 1)
+                database.characterDao().insertAll(allChars.results)
+                if (allChars.info.next == null) {
+                    isLastPage = true
+                    break
+                }
+            }
 
-
-
-            if (syncedSuccessfully) {
-
+            if (isLastPage) {
+                Log.e("acca", "success")
                 Result.success()
             } else {
+                Log.e("acca", "retry")
                 Result.retry()
             }
         }
-    }
-
-    companion object {
-        /**
-         * Expedited one time work to sync data on app startup
-         */
-        fun startUpSyncWork() =
-            OneTimeWorkRequestBuilder<DelegatingWorker>().setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-                .setConstraints(SyncConstraints).setInputData(SyncWorker::class.delegatedData())
-                .build()
     }
 }

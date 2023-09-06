@@ -77,7 +77,7 @@ class GithubRepository @Inject constructor(
                     }
 
                     try {
-                        val apiResponse = service.getCharacters(page)
+                        val apiResponse = service.getCharacters(page).results
 
                         val repos = apiResponse
                         val endOfPaginationReached = repos.isEmpty()
