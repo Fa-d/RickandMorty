@@ -32,17 +32,14 @@ class MainApplication : Application(), Configuration.Provider {
 
     private fun delayedInit() {
         applicationScope.launch {
-            setupRecurringWork()
+            WorkManager.getInstance(this@MainApplication).apply {
+                enqueueUniqueWork(
+                    "fetchChars",
+                    ExistingWorkPolicy.REPLACE,
+                    SyncWorker.startUpSyncWork(),
+                )
+            }
         }
     }
 
-    private fun setupRecurringWork() {
-        WorkManager.getInstance(this).apply {
-            enqueueUniqueWork(
-                "fetchChars",
-                ExistingWorkPolicy.REPLACE,
-                SyncWorker.startUpSyncWork(),
-            )
-        }
-    }
 }

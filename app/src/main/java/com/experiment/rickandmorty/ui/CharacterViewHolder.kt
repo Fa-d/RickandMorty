@@ -11,7 +11,7 @@ class CharacterViewHolder(private val binding: CharactersViewholderBinding) :
         binding.apply {
             binding.title.text = charactersModel.name
             binding.description.text = charactersModel.status
-            binding.created.text = charactersModel.created
+            binding.created.text = charactersModel.gender
         }
     }
 }

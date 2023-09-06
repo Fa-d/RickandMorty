@@ -29,7 +29,9 @@ import com.experiment.rickandmorty.api.RetrofitNetwork
 import com.experiment.rickandmorty.db.MainDatabase
 import com.experiment.rickandmorty.data.model.CharactersModel
 import com.experiment.rickandmorty.data.model.RemoteKeys
+import com.google.gson.JsonObject
 import kotlinx.coroutines.flow.Flow
+import org.json.JSONObject
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
@@ -77,7 +79,12 @@ class GithubRepository @Inject constructor(
                     }
 
                     try {
-                        val apiResponse = service.getCharacters(page).results
+
+                        var paramObject = JSONObject()
+                        paramObject.put(
+                            "query",
+                            "{" + "  characters(page: ${page + 1}) {" + "    info {" + "      next" + "    }" + "    results {" + "      id" + "      name" + "      gender" + "      status" + "      species" + "      image" + "    }" + "  }" + "}"
+                        )/*val apiResponse = service.getCharacters(paramObject.toString())
 
                         val repos = apiResponse
                         val endOfPaginationReached = repos.isEmpty()
@@ -93,8 +100,8 @@ class GithubRepository @Inject constructor(
                             }
                             database.remoteKeysDao().insertAll(keys)
                             database.characterDao().insertAll(repos)
-                        }
-                        return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
+                        }*/
+                        return MediatorResult.Success(endOfPaginationReached = false)
                     } catch (exception: IOException) {
                         return MediatorResult.Error(exception)
                     } catch (exception: HttpException) {

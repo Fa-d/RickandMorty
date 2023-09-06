@@ -1,17 +1,21 @@
 package com.experiment.rickandmorty.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.WorkManager
+import androidx.work.Worker
 import com.experiment.rickandmorty.R
 import com.experiment.rickandmorty.data.CharacterViewModel
 import com.experiment.rickandmorty.databinding.FragmentCharactersListBinding
@@ -39,6 +43,10 @@ class CharactersListFragment : Fragment() {
     }
 
     private fun initView() {
+        WorkManager.getInstance(requireContext()).getWorkInfosForUniqueWorkLiveData("sync")
+            .observeForever { listWork ->
+                Log.e("listWork.size", listWork.size.toString())
+            }
 
         val viewModel: CharacterViewModel by activityViewModels()
         val characterAdapter = CharacterAdapter()
@@ -48,7 +56,7 @@ class CharactersListFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.characterList.collectLatest { innerData ->
                     CharacterAdapter().apply {
-                         characterAdapter.submitData(innerData)
+                        characterAdapter.submitData(innerData)
                     }
                 }
             }
