@@ -26,7 +26,7 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.experiment.rickandmorty.api.RetrofitNetwork
-import com.experiment.rickandmorty.data.db.MainDatabase
+import com.experiment.rickandmorty.db.MainDatabase
 import com.experiment.rickandmorty.data.model.CharactersModel
 import com.experiment.rickandmorty.data.model.RemoteKeys
 import kotlinx.coroutines.flow.Flow

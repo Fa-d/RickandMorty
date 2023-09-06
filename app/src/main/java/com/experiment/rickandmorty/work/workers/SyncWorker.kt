@@ -20,11 +20,15 @@ import android.content.Context
 import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.tracing.traceAsync
+import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkerParameters
 import com.experiment.rickandmorty.api.RetrofitNetwork
-import com.experiment.rickandmorty.data.db.MainDatabase
+import com.experiment.rickandmorty.db.MainDatabase
 import com.experiment.rickandmorty.work.initializers.syncForegroundInfo
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -35,8 +39,8 @@ import kotlinx.coroutines.withContext
 class SyncWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
-    private val service: RetrofitNetwork,
-    private val database: MainDatabase
+    val service: RetrofitNetwork,
+    val database: MainDatabase
 ) : CoroutineWorker(appContext, workerParams) {
     override suspend fun getForegroundInfo(): ForegroundInfo = appContext.syncForegroundInfo()
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
@@ -67,5 +71,20 @@ class SyncWorker @AssistedInject constructor(
             }
         }
     }
+
+    companion object {
+        /**
+         * Expedited one time work to sync data on app startup
+         */
+        fun startUpSyncWork() =
+            OneTimeWorkRequestBuilder<DelegatingWorker>().setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                .setConstraints(SyncConstraints).setInputData(SyncWorker::class.delegatedData())
+                .build()
+
+        val SyncConstraints
+            get() = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+    }
+
+
 }
 

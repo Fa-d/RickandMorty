@@ -18,7 +18,7 @@ package com.experiment.rickandmorty.di
 
 import android.content.Context
 import androidx.room.Room
-import com.experiment.rickandmorty.data.db.MainDatabase
+import com.experiment.rickandmorty.db.MainDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

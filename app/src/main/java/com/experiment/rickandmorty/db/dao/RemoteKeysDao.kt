@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.experiment.rickandmorty.data.db.dao
+package com.experiment.rickandmorty.db.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
