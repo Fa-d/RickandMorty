@@ -18,4 +18,7 @@ class MainRepository @Inject constructor(
     fun putImageToCache(imageID: String, image: Bitmap) = lruDiskCache.putImage(imageID, image)
     suspend fun getAllImage(): List<Bitmap> = lruDiskCache.getAllImages()
     fun clearImageCache() = lruDiskCache.clearCache()
+
+    suspend fun getIndividualCharacter(characterID: String) =
+        network.getIndividualCharacter(characterID)
 }

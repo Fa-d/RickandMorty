@@ -30,7 +30,6 @@ class ImageSyncWorker @AssistedInject constructor(
     override suspend fun getForegroundInfo(): ForegroundInfo = appContext.syncForegroundInfo()
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         traceAsync("Sync", 0) {
-            Log.e("ImageSyncWorker", "sldfslkdfnImageSyncWorker")
             try {
                 for (tempItem in mainRepository.characterDao().charactersForImageByName()) {
                     val imageBitmap = loadImageBitmap(URL(tempItem.image))

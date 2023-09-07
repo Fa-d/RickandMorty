@@ -57,7 +57,7 @@ class CharactersListFragment : Fragment() {
         characterAdapter.stateRestorationPolicy =
             RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         characterAdapter.oonCharacterClicked = { selectedCharacter ->
-            viewModel.selectedCharacterID = selectedCharacter
+            viewModel.selectedCharacterID = selectedCharacter.id
             findNavController().navigate(R.id.action_charactersListFragment_to_individualCharactersFragment)
         }
     }
