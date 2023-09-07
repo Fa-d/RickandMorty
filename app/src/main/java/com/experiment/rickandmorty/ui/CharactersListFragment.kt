@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.experiment.rickandmorty.R
@@ -68,8 +69,6 @@ class CharactersListFragment : Fragment() {
 
     private fun FragmentCharactersListBinding.bindAdapter(characterAdapter: CharacterAdapter) {
         list.adapter = characterAdapter
-        list.layoutManager = LinearLayoutManager(list.context)
-        val decoration = DividerItemDecoration(list.context, DividerItemDecoration.VERTICAL)
-        list.addItemDecoration(decoration)
+        list.layoutManager = GridLayoutManager(list.context, 2, GridLayoutManager.VERTICAL, false)
     }
 }
