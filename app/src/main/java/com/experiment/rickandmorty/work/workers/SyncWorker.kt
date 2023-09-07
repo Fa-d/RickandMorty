@@ -28,7 +28,6 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkerParameters
 import com.experiment.rickandmorty.api.RetrofitNetwork
-import com.experiment.rickandmorty.data.model.AllCharactersResponse
 import com.experiment.rickandmorty.db.MainDatabase
 import com.experiment.rickandmorty.work.initializers.syncForegroundInfo
 import com.google.gson.Gson
@@ -61,27 +60,30 @@ class SyncWorker @AssistedInject constructor(
                     "{" + "  characters(page: 1) {" + "    info {" + "      next" + "    }" + "    results {" + "      id" + "      name" + "      gender" + "      status" + "      species" + "      image" + "    }" + "  }" + "}"
                 )
 
-                val allChars = gson?.fromJson(
-                    service.getCharacters(paramObject.toString()).body().toString(),
-                    AllCharactersResponse::class.java
-                )
+                /* val allChars = gson?.fromJson(
+                     ),
+                     AllCharactersResponse::class.java
+                 )*/
+                val response = service.getCharacters(paramObject.toString())
+
+                Log.e("dsfsdf", response.toString())
 
 
-                for (i in 0..allChars!!.info.pages-1) {
-                    paramObject.put(
-                        "query",
-                        "{" + "  characters(page: ${i + 1}) {" + "    info {" + "      next" + "    }" + "    results {" + "      id" + "      name" + "      gender" + "      status" + "      species" + "      image" + "    }" + "  }" + "}"
-                    )
-                    val allChars = gson?.fromJson(
-                        service.getCharacters(paramObject.toString()).body().toString(),
-                        AllCharactersResponse::class.java
-                    )
-                    database.characterDao().insertAll(allChars!!.results)
-                    if (allChars.info.next == null) {
-                        isLastPage = true
-                        break
-                    }
-                }
+                /*   for (i in 0..allChars!!.info.pages-1) {
+                       paramObject.put(
+                           "query",
+                           "{" + "  characters(page: ${i + 1}) {" + "    info {" + "      next" + "    }" + "    results {" + "      id" + "      name" + "      gender" + "      status" + "      species" + "      image" + "    }" + "  }" + "}"
+                       )
+                       val allChars = gson?.fromJson(
+                           service.getCharacters(paramObject.toString()).body().toString(),
+                           AllCharactersResponse::class.java
+                       )
+                       database.characterDao().insertAll(allChars!!.results)
+                       if (allChars.info.next == null) {
+                           isLastPage = true
+                           break
+                       }
+                   }*/
 
             } catch (e: Exception) {
                 e.printStackTrace()
