@@ -34,7 +34,7 @@ class MainApplication : Application(), Configuration.Provider {
         applicationScope.launch {
             WorkManager.getInstance(this@MainApplication).apply {
                 enqueueUniqueWork(
-                    "fetchChars",
+                    "fetchCharacters",
                     ExistingWorkPolicy.REPLACE,
                     SyncWorker.startUpSyncWork(),
                 )

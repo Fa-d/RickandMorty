@@ -1,4 +1,3 @@
-
 package com.experiment.rickandmorty.db
 
 import androidx.room.Database
