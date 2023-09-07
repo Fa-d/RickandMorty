@@ -1,8 +1,7 @@
 package com.experiment.rickandmorty.api
 
-import com.experiment.rickandmorty.data.model.graphql.GraphQLResponse
+import com.experiment.rickandmorty.data.model.GraphQLResponse
 import okhttp3.Call
-import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -27,8 +26,7 @@ class RetrofitNetwork @Inject constructor(
 
     private val networkApi = Retrofit.Builder().baseUrl(BASE_URL).callFactory(okhttpCallFactory)
         .addConverterFactory(ScalarsConverterFactory.create())
-        .addConverterFactory(GsonConverterFactory.create())
-        .build().create(ApiService::class.java)
+        .addConverterFactory(GsonConverterFactory.create()).build().create(ApiService::class.java)
 
     suspend fun getCharacters(body: String): GraphQLResponse = networkApi.getAllCharacter(body)
 

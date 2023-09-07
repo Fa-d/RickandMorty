@@ -1,23 +1,6 @@
-/*
- * Copyright 2022 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.experiment.rickandmorty.work.workers
 
 import android.content.Context
-import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.tracing.traceAsync
 import androidx.work.Constraints
@@ -51,51 +34,28 @@ class SyncWorker @AssistedInject constructor(
     override suspend fun getForegroundInfo(): ForegroundInfo = appContext.syncForegroundInfo()
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         traceAsync("Sync", 0) {
-            var isLastPage = false
 
             try {
-                val paramObject = JSONObject()
-                paramObject.put(
-                    "query",
-                    "{" + "  characters(page: 1) {" + "    info {" + "      next" + "    }" + "    results {" + "      id" + "      name" + "      gender" + "      status" + "      species" + "      image" + "    }" + "  }" + "}"
-                )
+                val response = service.getCharacters(fetchQuery(1))
+                database.characterDao().insertAll(response.data.characters.results)
 
-                /* val allChars = gson?.fromJson(
-                     ),
-                     AllCharactersResponse::class.java
-                 )*/
-                val response = service.getCharacters(paramObject.toString())
-
-                Log.e("dsfsdf", response.toString())
-
-
-                /*   for (i in 0..allChars!!.info.pages-1) {
-                       paramObject.put(
-                           "query",
-                           "{" + "  characters(page: ${i + 1}) {" + "    info {" + "      next" + "    }" + "    results {" + "      id" + "      name" + "      gender" + "      status" + "      species" + "      image" + "    }" + "  }" + "}"
-                       )
-                       val allChars = gson?.fromJson(
-                           service.getCharacters(paramObject.toString()).body().toString(),
-                           AllCharactersResponse::class.java
-                       )
-                       database.characterDao().insertAll(allChars!!.results)
-                       if (allChars.info.next == null) {
-                           isLastPage = true
-                           break
-                       }
-                   }*/
-
+                for (i in 2..response.data.characters.info.pages) {
+                    val response = service.getCharacters(fetchQuery(i))
+                    database.characterDao().insertAll(response.data.characters.results)
+                }
+                Result.success()
             } catch (e: Exception) {
                 e.printStackTrace()
-            }
-            if (isLastPage) {
-                Log.e("acca", "success")
-                Result.success()
-            } else {
-                Log.e("acca", "retry")
                 Result.retry()
             }
         }
+    }
+
+    private fun fetchQuery(pageNo: Int): String {
+        return JSONObject().put(
+            "query",
+            "{ characters(page: ${pageNo}) { info { next pages } results { id name gender status species image } }}"
+        ).toString()
     }
 
     companion object {

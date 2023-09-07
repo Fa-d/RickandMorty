@@ -1,5 +1,6 @@
-package com.experiment.rickandmorty.db
+package com.experiment.rickandmorty.di
 
+import com.experiment.rickandmorty.db.MainDatabase
 import com.experiment.rickandmorty.db.dao.CharacterDao
 import com.experiment.rickandmorty.db.dao.RemoteKeysDao
 import dagger.Module

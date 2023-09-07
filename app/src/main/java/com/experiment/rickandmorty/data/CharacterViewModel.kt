@@ -8,8 +8,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CharacterViewModel @Inject constructor(
-    repository: GithubRepository
+    repository: MainRepository
 ) : ViewModel() {
-    val characterList = repository.getSearchResultStream()
-    var selectedCharacterID: CharactersModel? = null 
+    val characterList = repository.getCharactersStream()
+    var selectedCharacterID: CharactersModel? = null
 }

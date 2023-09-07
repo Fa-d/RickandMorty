@@ -1,13 +1,22 @@
 package com.experiment.rickandmorty.data.model
 
+
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
+data class GraphQLResponse(
+    @SerializedName("data")
+    var `data`: Data = Data()
+)
 
-data class AllCharactersResponse(
+data class Data(
+    @SerializedName("characters") var characters: Characters = Characters()
+)
+
+data class Characters(
     @SerializedName("info") var info: Info = Info(),
-    @SerializedName("results") var results: List<CharactersModel> = listOf<CharactersModel>()
+    @SerializedName("results") var results: List<CharactersModel> = listOf()
 )
 
 @Entity(tableName = "characters")
@@ -22,8 +31,5 @@ data class CharactersModel(
     )
 
 data class Info(
-    @SerializedName("count") var count: Int = 0,
-    @SerializedName("next") var next: Any? = null,
-    @SerializedName("pages") var pages: Int = 0,
-    @SerializedName("prev") var prev: Any? = null
+    @SerializedName("next") var next: Int? = 0, @SerializedName("pages") var pages: Int = 0
 )
