@@ -20,7 +20,7 @@ class CharacterViewModel @Inject constructor(
     val characterList = Pager(
         config = PagingConfig(pageSize = 20, enablePlaceholders = false),
         pagingSourceFactory = {
-            mainRepository.characterDao().reposByName()
+            mainRepository.characterDao().charactersByName()
         }).flow.cachedIn(viewModelScope)
 
 }

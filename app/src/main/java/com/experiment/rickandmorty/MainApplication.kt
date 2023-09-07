@@ -5,6 +5,7 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
+import com.experiment.rickandmorty.work.workers.ImageSyncWorker
 import com.experiment.rickandmorty.work.workers.SyncWorker
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
@@ -32,13 +33,20 @@ class MainApplication : Application(), Configuration.Provider {
 
     private fun delayedInit() {
         applicationScope.launch {
-            WorkManager.getInstance(this@MainApplication).apply {
-                enqueueUniqueWork(
+            /*   WorkManager.getInstance(this@MainApplication).apply {
+                   enqueueUniqueWork(
+                       "fetchCharacters",
+                       ExistingWorkPolicy.REPLACE,
+                       SyncWorker.startUpSyncWork(),
+                   )
+               }*/
+            WorkManager.getInstance(this@MainApplication)
+                .beginUniqueWork(
                     "fetchCharacters",
                     ExistingWorkPolicy.REPLACE,
-                    SyncWorker.startUpSyncWork(),
+                    SyncWorker.startUpSyncWork()
                 )
-            }
+                .then(ImageSyncWorker.startUpImageSyncWork()).enqueue()
         }
     }
 
