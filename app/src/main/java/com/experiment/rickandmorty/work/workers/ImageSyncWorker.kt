@@ -3,6 +3,7 @@ package com.experiment.rickandmorty.work.workers
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.tracing.traceAsync
 import androidx.work.Constraints
@@ -23,24 +24,25 @@ import java.net.URL
 @HiltWorker
 class ImageSyncWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
-    @Assisted workerParams: WorkerParameters,
-    val mainRepository: MainRepository
+    @Assisted workerParams: WorkerParameters, private val mainRepository: MainRepository
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun getForegroundInfo(): ForegroundInfo = appContext.syncForegroundInfo()
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         traceAsync("Sync", 0) {
-
+            Log.e("ImageSyncWorker", "sldfslkdfnImageSyncWorker")
             try {
-         /*       mainRepository.putImageToCache(
-                    response.data.characters.results[0].id.toString(), imageBitmap
-                )
-                val imageBitmap = loadImageBitmap(URL(response.data.characters.results[0].image))
-*/
+                for (tempItem in mainRepository.characterDao().charactersForImageByName()) {
+                    val imageBitmap = loadImageBitmap(URL(tempItem.image))
+                    mainRepository.putImageToCache(tempItem.id.toString(), imageBitmap)
+                }
+                Log.e("Imagefetch", "success")
+                Result.success()
             } catch (ex: Exception) {
                 ex.printStackTrace()
+                Log.e("Imagefetch", "failed")
+                Result.retry()
             }
-            Result.retry()
         }
     }
 

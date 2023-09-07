@@ -15,6 +15,9 @@ interface CharacterDao {
     @Query("SELECT * FROM characters")
     fun charactersByName(): PagingSource<Int, CharactersModel>
 
+    @Query("SELECT * FROM characters")
+    fun charactersForImageByName(): List<CharactersModel>
+
     @Query("DELETE FROM characters")
     suspend fun clearCharacters()
 

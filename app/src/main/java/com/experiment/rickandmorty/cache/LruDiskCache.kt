@@ -150,7 +150,7 @@ class LruDiskCache(private val context: Context) :
 }
 
 
-const val LRU_CACHE_CAPACITY = 20;
+const val LRU_CACHE_CAPACITY = 2000;
 
 
 fun String.encodeToBase64(): String {
