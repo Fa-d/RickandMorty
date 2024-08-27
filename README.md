@@ -2,6 +2,13 @@
 
 A simple android application implementing clean architecture principals with Rick And Morty API
 
+## Current ongoing changes
+  - Change layouts to compose 
+  - Call Api through KTOR
+  - Change Sharedpref to Datastore
+  - modularize dependencies
+
+
 ## Installation:
 
 Make sure you have the following environment ready on your device.
