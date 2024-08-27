@@ -14,4 +14,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Rick and Morty"
-include ':app'
+include(":app")
