@@ -26,7 +26,6 @@ private fun Context.syncWorkNotification(): Notification {
         ).apply {
             description = getString(R.string.app_name)
         }
-        // Register the channel with the system
         val notificationManager: NotificationManager? =
             getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
 
@@ -37,7 +36,7 @@ private fun Context.syncWorkNotification(): Notification {
         this,
         SYNC_NOTIFICATION_CHANNEL_ID,
     ).setSmallIcon(
-        R.drawable.ic_launcher_background,
+        R.drawable.scientist,
     ).setContentTitle(getString(R.string.app_name)).setPriority(NotificationCompat.PRIORITY_DEFAULT)
         .build()
 }
