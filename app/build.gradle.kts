@@ -171,4 +171,6 @@ dependencies {
     implementation(libs.androidx.dataStore)
     implementation(libs.protobuf.kotlin.lite)
 
+    val lottieVersion = "6.5.0"
+    implementation("com.airbnb.android:lottie-compose:$lottieVersion")
 }
