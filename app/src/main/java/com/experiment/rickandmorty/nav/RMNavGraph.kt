@@ -8,10 +8,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.experiment.rickandmorty.nav.NavScreens.HOME_SCREEN
+import com.experiment.rickandmorty.nav.NavScreens.CHARACTER_SCREEN
+import com.experiment.rickandmorty.nav.NavScreens.EPISODE_SCREEN
 import com.experiment.rickandmorty.nav.NavScreens.INDIVIDUAL_ITEM_SCREEN
 import com.experiment.rickandmorty.nav.NavScreens.LOADING_SCREEN
+import com.experiment.rickandmorty.nav.NavScreens.LOCATION_SCREEN
 import com.experiment.rickandmorty.ui.screens.CharacterListScreen
 import com.experiment.rickandmorty.ui.screens.LoadingScreen
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +20,7 @@ import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun RMNavGraph(
-    navController: NavHostController = rememberNavController(),
+    navController: NavHostController,
     startDestination: String = LOADING_SCREEN, scope: CoroutineScope = rememberCoroutineScope(),
     navActions: RMNavActions = remember(navController) { RMNavActions(navController) }
 ) {
@@ -30,10 +31,17 @@ fun RMNavGraph(
                 navActions.navigateToHomeScreen()
             }, 700L)
         }
-        composable(HOME_SCREEN) {
+        composable(INDIVIDUAL_ITEM_SCREEN) {
+
+        }
+        composable(CHARACTER_SCREEN) {
             CharacterListScreen()
         }
-        composable(INDIVIDUAL_ITEM_SCREEN) {}
+        composable(LOCATION_SCREEN) {
 
+        }
+        composable(EPISODE_SCREEN) {
+
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.experiment.rickandmorty.nav
 
 import androidx.navigation.NavHostController
-import com.experiment.rickandmorty.nav.NavScreens.HOME_SCREEN
+import com.experiment.rickandmorty.nav.NavScreens.CHARACTER_SCREEN
 import com.experiment.rickandmorty.nav.NavScreens.INDIVIDUAL_ITEM_SCREEN
 import com.experiment.rickandmorty.nav.NavScreens.LOADING_SCREEN
 
@@ -11,7 +11,7 @@ class RMNavActions(private val navController: NavHostController) {
     }
 
     fun navigateToHomeScreen() {
-        navController.navigate(HOME_SCREEN) { launchSingleTop = true }
+        navController.navigate(CHARACTER_SCREEN) { launchSingleTop = true }
     }
 
     fun navigateToIndividualItemScreen() {

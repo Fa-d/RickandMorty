@@ -39,10 +39,10 @@ class MainApplication : Application(), Configuration.Provider {
                        ExistingWorkPolicy.REPLACE,
                        SyncWorker.startUpSyncWork(),
                    )
-               }*/
+               }
             WorkManager.getInstance(this@MainApplication).beginUniqueWork(
                     "fetchCharacters", ExistingWorkPolicy.REPLACE, SyncWorker.startUpSyncWork()
-                ).then(ImageSyncWorker.startUpImageSyncWork()).enqueue()
+                ).then(ImageSyncWorker.startUpImageSyncWork()).enqueue()*/
         }
     }
 
