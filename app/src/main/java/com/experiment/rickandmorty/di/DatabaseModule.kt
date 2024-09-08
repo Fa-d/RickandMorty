@@ -18,8 +18,6 @@ object DatabaseModule {
     fun providesDatabase(
         @ApplicationContext context: Context,
     ): MainDatabase = Room.databaseBuilder(
-        context,
-        MainDatabase::class.java,
-        "main-database",
+        context, MainDatabase::class.java, "main-database"
     ).build()
 }

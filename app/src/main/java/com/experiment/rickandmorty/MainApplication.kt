@@ -3,9 +3,12 @@ package com.experiment.rickandmorty
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import androidx.work.Constraints
 import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
-import com.experiment.rickandmorty.work.workers.ImageSyncWorker
 import com.experiment.rickandmorty.work.workers.SyncWorker
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
@@ -33,16 +36,17 @@ class MainApplication : Application(), Configuration.Provider {
 
     private fun delayedInit() {
         applicationScope.launch {
-            /*   WorkManager.getInstance(this@MainApplication).apply {
+            WorkManager.getInstance(this@MainApplication).apply {
                    enqueueUniqueWork(
                        "fetchCharacters",
                        ExistingWorkPolicy.REPLACE,
-                       SyncWorker.startUpSyncWork(),
+                       OneTimeWorkRequestBuilder<SyncWorker>().setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                           .setConstraints(
+                               Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
+                                   .build()
+                           ).build()
                    )
                }
-            WorkManager.getInstance(this@MainApplication).beginUniqueWork(
-                    "fetchCharacters", ExistingWorkPolicy.REPLACE, SyncWorker.startUpSyncWork()
-                ).then(ImageSyncWorker.startUpImageSyncWork()).enqueue()*/
         }
     }
 

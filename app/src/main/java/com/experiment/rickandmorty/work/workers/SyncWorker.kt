@@ -3,12 +3,8 @@ package com.experiment.rickandmorty.work.workers
 import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.tracing.traceAsync
-import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkerParameters
 import com.experiment.rickandmorty.data.MainRepository
 import com.experiment.rickandmorty.work.initializers.syncForegroundInfo
@@ -28,7 +24,6 @@ class SyncWorker @AssistedInject constructor(
     override suspend fun getForegroundInfo(): ForegroundInfo = appContext.syncForegroundInfo()
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         traceAsync("Sync", 0) {
-
             try {
                 val response = mainRepository.getCharacters(fetchQuery(1))
                 mainRepository.characterDao().insertAll(response.data.characters.results)
@@ -51,17 +46,6 @@ class SyncWorker @AssistedInject constructor(
             "{ characters(page: ${pageNo}) { info { next pages } results { id name gender status species image } }}"
         ).toString()
     }
-
-    companion object {
-        fun startUpSyncWork() =
-            OneTimeWorkRequestBuilder<DelegatingWorker>().setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-                .setConstraints(SyncConstraints).setInputData(SyncWorker::class.delegatedData())
-                .build()
-
-        private val SyncConstraints
-            get() = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-    }
-
 
 }
 
