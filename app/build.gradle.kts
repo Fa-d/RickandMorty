@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android)
-
+    alias(libs.plugins.compose)
     id("org.jetbrains.kotlin.plugin.serialization")
     id("androidx.room")
     id("kotlin-parcelize")
@@ -78,6 +78,9 @@ android {
         }
     }
 }
+
+
+
 androidComponents {
     onVariants(selector().all()) { variant ->
         afterEvaluate {
@@ -106,46 +109,50 @@ protobuf {
     }
 
 }
+
+
+
 dependencies {
-    implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.9.0")
-    implementation("androidx.compose.material3:material3:1.2.1")
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.material3)
     implementation(libs.androidx.ui.text.google.fonts)
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    implementation("com.google.dagger:hilt-android:2.47")
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.hilt.android)
     debugImplementation(libs.androidx.ui.tooling)
-    ksp("com.google.dagger:hilt-android-compiler:2.47")
-    ksp("androidx.hilt:hilt-compiler:1.0.0")
-    implementation("com.google.dagger:hilt-android-testing:2.47")
-    implementation("androidx.work:work-runtime-ktx:2.8.1")
-    implementation("androidx.work:work-testing:2.8.1")
-    implementation("androidx.paging:paging-runtime-ktx:3.1.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
-    implementation("androidx.room:room-ktx:2.5.2")
-    implementation("androidx.room:room-runtime:2.5.2")
-    implementation("androidx.room:room-paging:2.5.2")
-    ksp("androidx.room:room-compiler:2.5.2")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
-    implementation("androidx.activity:activity-ktx:1.7.2")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.1")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
-    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    implementation("androidx.startup:startup-runtime:1.1.1")
-    implementation("androidx.hilt:hilt-work:1.0.0")
-    implementation("androidx.tracing:tracing-ktx:1.2.0")
-    implementation("androidx.palette:palette-ktx:1.0.0")
+    ksp(libs.hilt.android.compiler)
+    ksp(libs.androidx.hilt.compiler)
+    implementation(libs.hilt.android.testing)
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.work.testing)
+    implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.guava)
+    implementation(libs.kotlinx.coroutines.test)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.paging)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.logging.interceptor)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.converter.scalars)
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
+    implementation(libs.glide)
+    implementation(libs.androidx.startup.runtime)
+    implementation(libs.androidx.hilt.work)
+    implementation(libs.androidx.tracing.ktx)
+    implementation(libs.androidx.palette.ktx)
 
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -155,10 +162,9 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation("androidx.compose.foundation:foundation:1.6.8")
+    implementation(libs.androidx.foundation)
 
     implementation(libs.hilt.android)
-
 
     val ktorVersion = "2.3.12"
     implementation("io.ktor:ktor-client-core:$ktorVersion")
@@ -170,7 +176,5 @@ dependencies {
     implementation("io.ktor:ktor-client-logging:2.3.2")
     implementation(libs.androidx.dataStore)
     implementation(libs.protobuf.kotlin.lite)
-
-    val lottieVersion = "6.5.0"
-    implementation("com.airbnb.android:lottie-compose:$lottieVersion")
+    implementation(libs.lottie.compose)
 }

@@ -5,6 +5,7 @@ import com.experiment.rickandmorty.data.model.GraphQLResponse
 import com.experiment.rickandmorty.db.MainDatabase
 import javax.inject.Inject
 
+
 class MainRepository @Inject constructor(
     private val database: MainDatabase, private val network: ApiService
 ) {

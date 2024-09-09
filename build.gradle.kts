@@ -7,4 +7,5 @@ plugins {
     kotlin("plugin.serialization").version(libs.versions.kotlin).apply(false)
     id("androidx.room").version("2.6.1").apply(false)
     alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.compose) apply false
 }

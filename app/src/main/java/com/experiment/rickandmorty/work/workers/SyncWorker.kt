@@ -1,6 +1,7 @@
 package com.experiment.rickandmorty.work.workers
 
 import android.content.Context
+import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.tracing.traceAsync
 import androidx.work.CoroutineWorker
@@ -16,12 +17,12 @@ import org.json.JSONObject
 
 @HiltWorker
 class SyncWorker @AssistedInject constructor(
-    @Assisted private val appContext: Context,
-    @Assisted workerParams: WorkerParameters,
+    @Assisted val context: Context,
+    @Assisted workerParameters: WorkerParameters,
     val mainRepository: MainRepository
-) : CoroutineWorker(appContext, workerParams) {
-
-    override suspend fun getForegroundInfo(): ForegroundInfo = appContext.syncForegroundInfo()
+) : CoroutineWorker(context, workerParameters) {
+    
+    override suspend fun getForegroundInfo(): ForegroundInfo = context.syncForegroundInfo()
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         traceAsync("Sync", 0) {
             try {
@@ -30,6 +31,7 @@ class SyncWorker @AssistedInject constructor(
 
                 for (i in 2..response.data.characters.info.pages) {
                     val response = mainRepository.getCharacters(fetchQuery(i))
+                    Log.e("sdfgfh", response.toString())
                     mainRepository.characterDao().insertAll(response.data.characters.results)
                 }
                 Result.success()
