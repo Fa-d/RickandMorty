@@ -21,5 +21,8 @@ interface CharacterDao {
     @Query("DELETE FROM characters")
     suspend fun clearCharacters()
 
+    @Query("SELECT image FROM characters")
+    suspend fun getAllImages(): List<String>
+
 
 }

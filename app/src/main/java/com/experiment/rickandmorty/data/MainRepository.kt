@@ -13,4 +13,6 @@ class MainRepository @Inject constructor(
     fun characterDao() = database.characterDao()
     suspend fun getIndividualCharacter(characterID: String) =
         network.getIndividualCharacter(characterID)
+
+    suspend fun getAllImages() = database.characterDao().getAllImages()
 }

@@ -12,7 +12,9 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.hilt.work.HiltWorker
 import androidx.tracing.traceAsync
 import androidx.work.CoroutineWorker
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ForegroundInfo
+import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.experiment.rickandmorty.R
@@ -22,6 +24,7 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
+import java.time.Duration
 
 @HiltWorker
 class SyncWorker @AssistedInject constructor(
@@ -38,9 +41,15 @@ class SyncWorker @AssistedInject constructor(
                 // for (i in 2..response.data.characters.info.pages) {
                 for (i in 2..3) {
                     val response = mainRepository.getCharacters(fetchQuery(i))
-                    Log.e("sdfgfh", response.toString())
                     mainRepository.characterDao().insertAll(response.data.characters.results)
                 }
+                val imageSyncWorker =
+                    PeriodicWorkRequestBuilder<ImageSyncWorker>(Duration.ofSeconds(10)).build()
+                WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+                    "fetchImages",
+                    ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
+                    imageSyncWorker
+                )
                 Result.success()
             } catch (e: Exception) {
                 e.printStackTrace()
