@@ -4,12 +4,14 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
+import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.experiment.rickandmorty.work.workers.SyncWorker
 import dagger.hilt.android.HiltAndroidApp
+import java.time.Duration
 import javax.inject.Inject
 
 
@@ -32,11 +34,13 @@ class MainApplication : Application(), Configuration.Provider {
         val constraints =
             Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
         val workRequest =
-            OneTimeWorkRequestBuilder<SyncWorker>().setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            PeriodicWorkRequestBuilder<SyncWorker>(Duration.ofSeconds(10))
+                //.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                 .setConstraints(constraints).build()
+
         val worker = WorkManager.getInstance(this)
-        worker.configuration
-        worker.enqueue(workRequest)
-        // worker.enqueueUniqueWork("fetchCharacters", ExistingWorkPolicy.REPLACE, workRequest)
+        worker.enqueueUniquePeriodicWork(
+            "fetchCharacters", ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE, workRequest
+        )
     }
 }

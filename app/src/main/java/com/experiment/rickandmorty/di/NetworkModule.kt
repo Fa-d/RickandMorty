@@ -34,7 +34,7 @@ object NetworkModule {
                     if (BuildConfig.DEBUG) {
                         setLevel(HttpLoggingInterceptor.Level.BODY)
                     }
-                },
+                }
             ).build()
         ).addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create()).build()
