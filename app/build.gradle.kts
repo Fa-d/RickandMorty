@@ -163,7 +163,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.foundation)
-
+    debugImplementation(libs.accompanist.permissions)
     implementation(libs.hilt.android)
 
     val ktorVersion = "2.3.12"

@@ -6,15 +6,14 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.hilt.work.HiltWorker
 import androidx.tracing.traceAsync
 import androidx.work.CoroutineWorker
-import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingWorkPolicy
 import androidx.work.ForegroundInfo
-import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.experiment.rickandmorty.R
@@ -24,7 +23,6 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
-import java.time.Duration
 
 @HiltWorker
 class SyncWorker @AssistedInject constructor(
@@ -43,13 +41,10 @@ class SyncWorker @AssistedInject constructor(
                     val response = mainRepository.getCharacters(fetchQuery(i))
                     mainRepository.characterDao().insertAll(response.data.characters.results)
                 }
-                val imageSyncWorker =
-                    PeriodicWorkRequestBuilder<ImageSyncWorker>(Duration.ofSeconds(10)).build()
-                WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-                    "fetchImages",
-                    ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
-                    imageSyncWorker
-                )
+                val imageSyncWorker = OneTimeWorkRequestBuilder<ImageSyncWorker>().build()
+                WorkManager.getInstance(context)
+                    .beginUniqueWork("fetchImages", ExistingWorkPolicy.REPLACE, imageSyncWorker)
+                    .enqueue()
                 Result.success()
             } catch (e: Exception) {
                 e.printStackTrace()

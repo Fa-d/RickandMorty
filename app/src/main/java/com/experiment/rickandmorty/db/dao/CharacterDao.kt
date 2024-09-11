@@ -9,7 +9,7 @@ import com.experiment.rickandmorty.data.model.CharactersModel
 
 @Dao
 interface CharacterDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(characters: List<CharactersModel>)
 
     @Query("SELECT * FROM characters")
