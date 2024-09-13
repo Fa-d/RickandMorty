@@ -10,6 +10,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.experiment.rickandmorty.ui.CharacterViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,11 +18,16 @@ import kotlinx.coroutines.launch
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun CharacterListScreen() {
+    val viewModel: CharacterViewModel = hiltViewModel()
+    val characterList = viewModel.characterList.collectAsLazyPagingItems()
     Surface {
         Column {
             LazyVerticalGrid(columns = GridCells.Adaptive(100.dp)) {
-                items(16) { index ->
-                    IndividualCharacter()
+                items(characterList.itemCount) { index ->
+                    val item = characterList[index]
+                    item?.let {
+                        IndividualCharacter(it)
+                    }
                 }
             }
         }
@@ -31,9 +37,9 @@ fun CharacterListScreen() {
 @Composable
 private fun initView() {
     val lifecycleScope = rememberCoroutineScope { Dispatchers.IO }
-    val viewModel: CharacterViewModel = hiltViewModel()
+
     LaunchedEffect(key1 = Unit) {
         lifecycleScope.launch {}
-        viewModel.characterList
+
     }
 }

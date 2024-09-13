@@ -1,7 +1,6 @@
 package com.experiment.rickandmorty
 
 import android.app.Application
-import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import androidx.work.Constraints
@@ -48,13 +47,10 @@ class MainApplication : Application(), Configuration.Provider {
             when (res.state) {
                 WorkInfo.State.SUCCEEDED, WorkInfo.State.ENQUEUED -> {
                     isLoadingComplete.value = true
-                    Log.e("came to ","isLoadingComplete" )
                 }
-
-                else -> {
-
-                }
-            }/* WorkInfo.State.ENQUEUED -> TODO()
+                else -> {}
+            }
+            /* WorkInfo.State.ENQUEUED -> TODO()
                         WorkInfo.State.RUNNING -> TODO()
                         WorkInfo.State.FAILED -> TODO()
                         WorkInfo.State.BLOCKED -> TODO()

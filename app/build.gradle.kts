@@ -38,6 +38,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
+        debug {
+            isMinifyEnabled = false
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -130,6 +133,7 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.work.testing)
     implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.paging.compose)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.guava)
@@ -177,4 +181,6 @@ dependencies {
     implementation(libs.androidx.dataStore)
     implementation(libs.protobuf.kotlin.lite)
     implementation(libs.lottie.compose)
+    implementation ("io.coil-kt:coil-compose:2.6.0")
+
 }

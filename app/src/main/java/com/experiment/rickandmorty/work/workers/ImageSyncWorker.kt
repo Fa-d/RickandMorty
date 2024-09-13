@@ -32,7 +32,6 @@ class ImageSyncWorker @AssistedInject constructor(
         val totalImages = inputData.getInt("total_images", 50)
         try {
             val res = mainRepository.getAllImages()
-            Log.e("res", res.size.toString())
             val prefix = "https://rickandmortyapi.com/api/character/avatar/"
             for (i in 0..totalImages) {
                 val result = res[i].replace(prefix, "")
@@ -53,7 +52,9 @@ class ImageSyncWorker @AssistedInject constructor(
         connection.connect()
         val inputStream = BufferedInputStream(connection.inputStream)
         val bitmap = BitmapFactory.decodeStream(inputStream)
-        val cacheFile = File.createTempFile(fileName, null, context.cacheDir)
+        val cacheFile = File(context.filesDir, fileName).apply {
+            createNewFile()
+        }
         ByteArrayOutputStream().use { bos ->
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos)
             FileOutputStream(cacheFile).use { fos ->
