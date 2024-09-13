@@ -28,14 +28,15 @@ class ImageSyncWorker @AssistedInject constructor(
     private val mainRepository: MainRepository
 ) : CoroutineWorker(context, workerParameters) {
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
+        mainRepository.characterDao().getAllImages()
         val currentImageIndex = inputData.getInt("current_image_index", 0)
-        val totalImages = inputData.getInt("total_images", 50)
+        val allImageList = mainRepository.getAllImages()
+        val totalImages = inputData.getInt("total_images", allImageList.size - 1)
         try {
-            val res = mainRepository.getAllImages()
             val prefix = "https://rickandmortyapi.com/api/character/avatar/"
             for (i in 0..totalImages) {
-                val result = res[i].replace(prefix, "")
-                imgFetch(res[i], result)
+                val result = allImageList[i].replace(prefix, "")
+                imgFetch(allImageList[i], result)
             }
             val outputData =
                 Data.Builder().putInt("current_image_index", currentImageIndex + 1).build()

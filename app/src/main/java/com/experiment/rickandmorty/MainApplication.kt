@@ -36,7 +36,6 @@ class MainApplication : Application(), Configuration.Provider {
             Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
         val workRequest =
             PeriodicWorkRequestBuilder<SyncWorker>(Duration.ofSeconds(10))
-                //.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                 .setConstraints(constraints).build()
 
         val worker = WorkManager.getInstance(this)
@@ -50,11 +49,6 @@ class MainApplication : Application(), Configuration.Provider {
                 }
                 else -> {}
             }
-            /* WorkInfo.State.ENQUEUED -> TODO()
-                        WorkInfo.State.RUNNING -> TODO()
-                        WorkInfo.State.FAILED -> TODO()
-                        WorkInfo.State.BLOCKED -> TODO()
-                        WorkInfo.State.CANCELLED -> TODO()*/
         }
     }
 }

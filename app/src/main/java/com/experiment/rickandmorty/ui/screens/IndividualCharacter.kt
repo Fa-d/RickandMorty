@@ -1,6 +1,8 @@
 package com.experiment.rickandmorty.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,10 +19,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.experiment.rickandmorty.R
 import com.experiment.rickandmorty.data.model.CharactersModel
+import com.experiment.rickandmorty.ui.CharacterViewModel
 
 
 @Composable
@@ -28,11 +32,17 @@ fun IndividualCharacter(item: CharactersModel) {
     val context = LocalContext.current
     val fileName = item.image.replace("https://rickandmortyapi.com/api/character/avatar/", "")
     val filePath = context.filesDir.path + "/" + fileName
+    val viewModel: CharacterViewModel = hiltViewModel()
+
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp)
+            .clickable {
+                val id = viewModel.individualCharacterResponse(item.id.toString())
+                Log.e("sdfgh", id.toString())
+            }
     ) {
         Card(
             modifier = Modifier

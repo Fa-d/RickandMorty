@@ -41,6 +41,8 @@ fun RMNavGraph(
                 isLoadingComplete.collectLatest { res ->
                     if (res) {
                         navActions.navigateToHomeScreen()
+                    } else if (!mainViewModel.isDatabaseEmpty()) {
+                        navActions.navigateToHomeScreen()
                     }
                 }
             }

@@ -36,8 +36,8 @@ class SyncWorker @AssistedInject constructor(
                 val response = mainRepository.getCharacters(fetchQuery(1))
                 mainRepository.characterDao().insertAll(response.data.characters.results)
                 setForeground(createForegroundInfo())
-                // for (i in 2..response.data.characters.info.pages) {
-                for (i in 2..3) {
+                 for (i in 2..response.data.characters.info.pages) {
+               // for (i in 2..3) {
                     val response = mainRepository.getCharacters(fetchQuery(i))
                     mainRepository.characterDao().insertAll(response.data.characters.results)
                 }

@@ -24,5 +24,7 @@ interface CharacterDao {
     @Query("SELECT image FROM characters")
     suspend fun getAllImages(): List<String>
 
+    @Query("SELECT EXISTS(SELECT 1 FROM characters)")
+    suspend fun isDatabaseEmpty(): Boolean
 
 }
