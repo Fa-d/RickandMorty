@@ -4,24 +4,21 @@ import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.hilt.work.HiltWorker
-import androidx.tracing.traceAsync
 import androidx.work.CoroutineWorker
-import androidx.work.ExistingWorkPolicy
 import androidx.work.ForegroundInfo
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.experiment.rickandmorty.R
 import com.experiment.rickandmorty.data.MainRepository
+import com.experiment.rickandmorty.work.foreservice.ImageDownloader
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
 @HiltWorker
@@ -29,28 +26,24 @@ class SyncWorker @AssistedInject constructor(
     @Assisted val context: Context,
     @Assisted workerParameters: WorkerParameters, private val mainRepository: MainRepository
 ) : CoroutineWorker(context, workerParameters) {
-    
-    override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
-        traceAsync("Sync", 0) {
-            try {
-                val response = mainRepository.getCharacters(fetchQuery(1))
-                mainRepository.characterDao().insertAll(response.data.characters.results)
-                setForeground(createForegroundInfo())
-                 for (i in 2..response.data.characters.info.pages) {
-               // for (i in 2..3) {
-                    val response = mainRepository.getCharacters(fetchQuery(i))
-                    mainRepository.characterDao().insertAll(response.data.characters.results)
-                }
-                val imageSyncWorker = OneTimeWorkRequestBuilder<ImageSyncWorker>().build()
-                WorkManager.getInstance(context)
-                    .beginUniqueWork("fetchImages", ExistingWorkPolicy.REPLACE, imageSyncWorker)
-                    .enqueue()
-                Result.success()
+
+    override suspend fun doWork(): Result {
+        try {
+            val response = mainRepository.getCharacters(fetchQuery(1))
+            mainRepository.characterDao().insertAll(response.data.characters.results)
+            setForeground(createForegroundInfo())
+            for (i in 2..response.data.characters.info.pages) {
+                val charactersList = mainRepository.getCharacters(fetchQuery(i))
+                mainRepository.characterDao().insertAll(charactersList.data.characters.results)
+            }
+            context.startService(Intent(context, ImageDownloader::class.java))
+
+            return Result.success()
             } catch (e: Exception) {
                 e.printStackTrace()
-                Result.retry()
+            return Result.retry()
             }
-        }
+
     }
 
     private fun fetchQuery(pageNo: Int): String {
