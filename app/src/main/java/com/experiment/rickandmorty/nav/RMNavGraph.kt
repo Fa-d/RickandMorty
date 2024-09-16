@@ -54,6 +54,8 @@ fun RMNavGraph(
             CharacterListScreen()
         }
         composable(LOCATION_SCREEN) {
+            //LocationListScreen()
+            functionExistsGlobally()
 
         }
         composable(EPISODE_SCREEN) {

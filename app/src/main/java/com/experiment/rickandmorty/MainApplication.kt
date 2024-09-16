@@ -40,7 +40,7 @@ class MainApplication : Application(), Configuration.Provider {
 
         val worker = WorkManager.getInstance(this)
         worker.enqueueUniquePeriodicWork(
-            "fetchCharacters", ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE, workRequest
+            "fetchCharacters", ExistingPeriodicWorkPolicy.KEEP, workRequest
         )
         worker.getWorkInfoByIdLiveData(workRequest.id).observeForever { res ->
             when (res.state) {
