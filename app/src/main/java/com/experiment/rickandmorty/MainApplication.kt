@@ -32,15 +32,15 @@ class MainApplication : Application(), Configuration.Provider {
     }
 
     private fun delayedInit() {
-        val constraints =
-            Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+        val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
+            .setRequiresStorageNotLow(true).setRequiresBatteryNotLow(true).build()
         val workRequest =
             PeriodicWorkRequestBuilder<SyncWorker>(Duration.ofSeconds(10))
                 .setConstraints(constraints).build()
 
         val worker = WorkManager.getInstance(this)
         worker.enqueueUniquePeriodicWork(
-            "fetchCharacters", ExistingPeriodicWorkPolicy.KEEP, workRequest
+            "fetchCharacters", ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE, workRequest
         )
         worker.getWorkInfoByIdLiveData(workRequest.id).observeForever { res ->
             when (res.state) {

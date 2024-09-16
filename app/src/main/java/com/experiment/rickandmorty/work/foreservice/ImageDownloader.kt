@@ -10,7 +10,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.experiment.rickandmorty.R
 import com.experiment.rickandmorty.data.MainRepository
@@ -37,7 +36,7 @@ class ImageDownloader : Service() {
 
     companion object {
         const val CHANNEL_ID = "file_download_channel"
-        const val NOTIFICATION_ID = 1
+        const val NOTIFICATION_ID = 2
     }
 
     private val notificationManager: NotificationManager by lazy {
@@ -72,6 +71,9 @@ class ImageDownloader : Service() {
         notificationBuilder.setContentText("Progress: $progress%").setProgress(100, progress, false)
             .setOnlyAlertOnce(true)
         notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
+        if (progress == 100) {
+            stopSelf()
+        }
     }
 
     private fun createNotification(): Notification {
@@ -84,24 +86,27 @@ class ImageDownloader : Service() {
             val allImageList = mainRepository.getAllImages()
             val prefix = "https://rickandmortyapi.com/api/character/avatar/"
             for (i in allImageList.indices) {
-                val result = allImageList[i].replace(prefix, "")
-                imgFetch(allImageList[i], result)
-                val progress = i * 100 / allImageList.size
+                val fileName = allImageList[i].replace(prefix, "")
+                val cacheFile = File(baseContext.filesDir, fileName)
+                val progress: Int = i * 100 / (allImageList.size - 1)
                 updateNotification(progress)
+                if (cacheFile.exists()) {
+                    continue;
+                } else {
+                    cacheFile.createNewFile()
+                    imgFetch(allImageList[i], cacheFile)
+                }
             }
         }
         return START_STICKY
     }
 
-    private fun imgFetch(url: String, fileName: String) {
-        Log.e("fileName", fileName)
+    private fun imgFetch(url: String, cacheFile: File) {
         val connection = URL(url).openConnection() as HttpURLConnection
         connection.connect()
         val inputStream = BufferedInputStream(connection.inputStream)
         val bitmap = BitmapFactory.decodeStream(inputStream)
-        val cacheFile = File(baseContext.filesDir, fileName).apply {
-            createNewFile()
-        }
+
         ByteArrayOutputStream().use { bos ->
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos)
             FileOutputStream(cacheFile).use { fos ->

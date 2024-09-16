@@ -1,18 +1,17 @@
 package com.experiment.rickandmorty.work.workers
 
-import android.annotation.SuppressLint
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
-import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.experiment.rickandmorty.R
 import com.experiment.rickandmorty.data.MainRepository
@@ -27,14 +26,23 @@ class SyncWorker @AssistedInject constructor(
     @Assisted workerParameters: WorkerParameters, private val mainRepository: MainRepository
 ) : CoroutineWorker(context, workerParameters) {
 
+
+    private val notificationManager: NotificationManager by lazy {
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    }
+
+
     override suspend fun doWork(): Result {
         try {
             val response = mainRepository.getCharacters(fetchQuery(1))
             mainRepository.characterDao().insertAll(response.data.characters.results)
             setForeground(createForegroundInfo())
-            for (i in 2..response.data.characters.info.pages) {
+            val pagesCount = response.data.characters.info.pages
+            for (i in 2..pagesCount) {
                 val charactersList = mainRepository.getCharacters(fetchQuery(i))
                 mainRepository.characterDao().insertAll(charactersList.data.characters.results)
+                val progress: Int = i * 100 / (pagesCount - 1)
+                updateNotification(progress)
             }
             context.startService(Intent(context, ImageDownloader::class.java))
 
@@ -52,45 +60,50 @@ class SyncWorker @AssistedInject constructor(
             "{ characters(page: ${pageNo}) { info { next pages } results { id name gender status species image } }}"
         ).toString()
     }
-
-    @SuppressLint("MissingPermission")
-    private fun createForegroundInfo(): ForegroundInfo {
-        createNotificationChannel()
-        val intent = WorkManager.getInstance(applicationContext).createCancelPendingIntent(id)
-        val notification = NotificationCompat.Builder(context, SYNC_NOTIFICATION_CHANNEL_ID)
-            .setSmallIcon(R.drawable.scientist).setContentTitle("RM Notification")
-            .setContentText("Syncing data in the background!")
-            .setPriority(NotificationCompat.PRIORITY_HIGH).setContentIntent(intent)
-            .setAutoCancel(true).build()
-
-        NotificationManagerCompat.from(context).notify(12345676, notification)
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ForegroundInfo(SYNC_NOTIFICATION_ID, notification, FOREGROUND_SERVICE_TYPE_DATA_SYNC)
-        } else {
-            ForegroundInfo(SYNC_NOTIFICATION_ID, notification)
-        }
-
-    }
+    private val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
 
 
     companion object {
-        const val SYNC_NOTIFICATION_ID = 5672341
-        private const val SYNC_NOTIFICATION_CHANNEL_ID = "SyncNotificationChannel"
+        const val CHANNEL_ID = "data_fetch_channel"
+        const val NOTIFICATION_ID = 1
+    }
+
+
+    private fun createNotification(): Notification {
+        return notificationBuilder.build()
     }
 
     private fun createNotificationChannel() {
+        val pendingIntent =
+            PendingIntent.getActivity(context, 0, Intent(), PendingIntent.FLAG_IMMUTABLE)
 
-
-        val name = "CHANNELNAME"
-        val descriptionText = "CHANNELDESCRIPTION"
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel = NotificationChannel(SYNC_NOTIFICATION_CHANNEL_ID, name, importance).apply {
-            description = descriptionText
-        }
-        val notificationManager: NotificationManager =
-            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val channel = NotificationChannel(
+            CHANNEL_ID, "Data sync", NotificationManager.IMPORTANCE_HIGH
+        )
+        notificationBuilder.setContentTitle("Syncing data").setContentText("Progress: 0%")
+            .setContentIntent(pendingIntent).setSmallIcon(R.drawable.rick).setOngoing(true)
         notificationManager.createNotificationChannel(channel)
+    }
 
+
+    private fun createForegroundInfo(): ForegroundInfo {
+        createNotificationChannel()
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            ForegroundInfo(
+                NOTIFICATION_ID, createNotification(), FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+            )
+        } else {
+            ForegroundInfo(NOTIFICATION_ID, createNotification())
+        }
+    }
+
+    private fun updateNotification(progress: Int) {
+        notificationBuilder.setContentText("Progress: $progress%").setProgress(100, progress, false)
+            .setOnlyAlertOnce(true)
+        notificationManager.notify(ImageDownloader.NOTIFICATION_ID, notificationBuilder.build())
+        if (progress == 100) {
+            notificationBuilder.setContentText("Sync complete")
+        }
     }
 
 }
