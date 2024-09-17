@@ -26,9 +26,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+
     }
 
     buildTypes {
@@ -64,7 +62,6 @@ android {
         jvmTarget = "17"
     }
     buildFeatures {
-        viewBinding = true
         buildConfig = true
         aidl = true
     }
@@ -185,5 +182,6 @@ dependencies {
     implementation ("org.jetbrains.kotlin:kotlin-reflect")
 
     api(project(":locationrm"))
+    api(project(":core"))
 
 }

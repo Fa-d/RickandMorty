@@ -1,8 +1,8 @@
-package com.experiment.rickandmorty.data
+package com.experiment.core.data
 
-import com.experiment.rickandmorty.api.ApiService
-import com.experiment.rickandmorty.data.model.GraphQLResponse
-import com.experiment.rickandmorty.db.MainDatabase
+import com.experiment.core.api.ApiService
+import com.experiment.core.data.model.GraphQLResponse
+import com.experiment.core.db.MainDatabase
 import javax.inject.Inject
 
 

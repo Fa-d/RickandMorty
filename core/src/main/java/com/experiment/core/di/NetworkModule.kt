@@ -1,7 +1,7 @@
-package com.experiment.rickandmorty.di
+package com.experiment.core.di
 
 import androidx.multidex.BuildConfig
-import com.experiment.rickandmorty.api.ApiService
+import com.experiment.core.api.ApiService
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides

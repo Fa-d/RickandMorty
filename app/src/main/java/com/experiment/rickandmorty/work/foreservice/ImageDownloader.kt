@@ -12,7 +12,7 @@ import android.graphics.BitmapFactory
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.experiment.rickandmorty.R
-import com.experiment.rickandmorty.data.MainRepository
+import com.experiment.core.data.MainRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

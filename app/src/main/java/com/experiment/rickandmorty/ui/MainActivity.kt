@@ -5,8 +5,8 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -24,18 +24,23 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        actionBar?.hide()
+
+        val permissions = arrayListOf<String>()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissions.add(Manifest.permission.POST_NOTIFICATIONS)
+        }
         setContent {
             val navController: NavHostController = rememberNavController()
-            val permissions = arrayListOf<String>()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                permissions.add(Manifest.permission.POST_NOTIFICATIONS)
-            }
             RMTheme {
                 PermissionBox(permissions = permissions) {
-                    Scaffold(bottomBar = {
-                        BottomNavigationBar(navController)
-                    }) { paddingValues ->
+                    Scaffold(
+                        bottomBar = {
+                            BottomNavigationBar(navController)
+                        },
+                        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+                    ) { paddingValues ->
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()

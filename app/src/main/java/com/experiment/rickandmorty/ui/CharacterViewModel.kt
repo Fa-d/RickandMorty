@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.experiment.rickandmorty.data.MainRepository
-import com.experiment.rickandmorty.data.model.IndividualCharacterResponse
+import com.experiment.core.data.MainRepository
+import com.experiment.core.data.model.IndividualCharacterResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

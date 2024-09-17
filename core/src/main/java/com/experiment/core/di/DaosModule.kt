@@ -1,7 +1,7 @@
-package com.experiment.rickandmorty.di
+package com.experiment.core.di
 
-import com.experiment.rickandmorty.db.MainDatabase
-import com.experiment.rickandmorty.db.dao.CharacterDao
+import com.experiment.core.db.MainDatabase
+import com.experiment.core.db.dao.CharacterDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

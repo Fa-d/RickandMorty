@@ -17,3 +17,4 @@ dependencyResolutionManagement {
 rootProject.name = "Rick and Morty"
 include(":app")
 include(":locationrm")
+include(":core")

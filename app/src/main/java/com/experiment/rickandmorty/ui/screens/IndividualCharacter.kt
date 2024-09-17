@@ -23,7 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.experiment.rickandmorty.R
-import com.experiment.rickandmorty.data.model.CharactersModel
+import com.experiment.core.data.model.CharactersModel
 import com.experiment.rickandmorty.ui.CharacterViewModel
 
 

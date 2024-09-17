@@ -34,22 +34,6 @@ import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
-@Composable
-fun PermissionBox(
-    modifier: Modifier = Modifier,
-    permission: String,
-    description: String? = null,
-    contentAlignment: Alignment = Alignment.TopStart,
-    onGranted: @Composable BoxScope.() -> Unit,
-) {
-    PermissionBox(
-        modifier,
-        permissions = listOf(permission),
-        requiredPermissions = listOf(permission),
-        description,
-        contentAlignment,
-    ) { onGranted() }
-}
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable

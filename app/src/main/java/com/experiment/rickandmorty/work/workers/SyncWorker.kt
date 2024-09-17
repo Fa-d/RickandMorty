@@ -14,7 +14,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.experiment.rickandmorty.R
-import com.experiment.rickandmorty.data.MainRepository
+import com.experiment.core.data.MainRepository
 import com.experiment.rickandmorty.work.foreservice.ImageDownloader
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject

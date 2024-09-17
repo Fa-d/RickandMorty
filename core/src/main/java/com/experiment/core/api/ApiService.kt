@@ -1,7 +1,7 @@
-package com.experiment.rickandmorty.api
+package com.experiment.core.api
 
-import com.experiment.rickandmorty.data.model.GraphQLResponse
-import com.experiment.rickandmorty.data.model.IndividualCharacterResponse
+import com.experiment.core.data.model.GraphQLResponse
+import com.experiment.core.data.model.IndividualCharacterResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers

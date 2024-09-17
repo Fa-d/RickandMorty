@@ -18,6 +18,7 @@ import com.experiment.rickandmorty.nav.NavScreens.LOCATION_SCREEN
 import com.experiment.rickandmorty.ui.MainViewModel
 import com.experiment.rickandmorty.ui.screens.CharacterListScreen
 import com.experiment.rickandmorty.ui.screens.LoadingScreen
+import com.experiment.rickmorty.location.LocationListScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 
@@ -54,8 +55,7 @@ fun RMNavGraph(
             CharacterListScreen()
         }
         composable(LOCATION_SCREEN) {
-            //LocationListScreen()
-            functionExistsGlobally()
+            LocationListScreen()
 
         }
         composable(EPISODE_SCREEN) {

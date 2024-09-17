@@ -1,7 +1,7 @@
 package com.experiment.rickandmorty.ui
 
 import androidx.lifecycle.ViewModel
-import com.experiment.rickandmorty.data.MainRepository
+import com.experiment.core.data.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

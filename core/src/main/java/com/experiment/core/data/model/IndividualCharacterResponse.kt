@@ -1,4 +1,4 @@
-package com.experiment.rickandmorty.data.model
+package com.experiment.core.data.model
 
 
 import com.google.gson.annotations.SerializedName
