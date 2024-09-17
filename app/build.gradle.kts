@@ -180,8 +180,8 @@ dependencies {
     implementation(libs.lottie.compose)
     implementation ("io.coil-kt:coil-compose:2.6.0")
     implementation ("org.jetbrains.kotlin:kotlin-reflect")
+    api(project(":feature:locationui"))
 
-    api(project(":locationrm"))
-    api(project(":core"))
+    api(project(":core:coreall"))
 
 }
